@@ -7,14 +7,18 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Deploy to Netlify (Production)
-        uses: netlify/actions/cli@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
-          args: deploy --dir=. --prod
+          node-version: '20'
+
+      - name: Deploy with Netlify CLI
+        run: npx --yes netlify-cli@latest deploy --dir=. --prod --message "GH Actions $GITHUB_SHA"
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
